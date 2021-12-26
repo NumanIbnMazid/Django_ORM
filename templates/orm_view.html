@@ -1,0 +1,132 @@
+{% load tags %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Django ORM Implementation</title>
+
+    <style>
+        .collapsible {
+            background-color: #eee;
+            color: #444;
+            cursor: pointer;
+            padding: 18px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 15px;
+        }
+
+        /* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move
+        the mouse over it (hover) */
+        .active,
+        .collapsible:hover {
+            background-color: #ccc;
+        }
+
+        /* Style the collapsible content. Note: hidden by default */
+        .content {
+            padding: 0 18px;
+            background-color: white;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.2s ease-out;
+        }
+
+        .collapsible:after {
+            content: '\02795';
+            /* Unicode character for "plus" sign (+) */
+            font-size: 13px;
+            color: white;
+            float: right;
+            margin-left: 5px;
+        }
+
+        .active:after {
+            content: "\2796";
+            /* Unicode character for "minus" sign (-) */
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Django ORM</h1>
+
+    <hr>
+
+    <h2>SQL Queries: </h2>
+
+    <hr>
+
+    {% for query in queries %}
+
+    <code>
+        <span style="font-size: 15px;"><span style="color: darkblue;">{{ forloop.counter }}</span> <span style="color: green;">(Start)</span>
+        {% if query.title %}<span style="font-size: 20px; color: purple; font-weight: bolder;">{{ query.title }}</span>{% endif %}
+    </span>
+        {% for _ in "x"|rjust:"100" %}*{% endfor %}
+    </code>
+    {% if query.notes %}
+    <hr>
+    <h3><b>Notes:</b></h3>
+    <blockquote><code>{{ query.notes|safe|linebreaks }}</code></blockquote>
+    {% endif %}
+    <hr>
+    Query String: <b><code style="font-size: 17px; color: firebrick;">{{ query.queryString }}</code></b>
+    <hr>
+    Raw SQL: <b><code>{{ query.sql }}</code></b>
+    <hr>
+    Execution Time: <b><em style="font-size: 23px; color: crimson;">{{ query.time }}</em></b>
+    <hr>
+    <button type="button" class="collapsible">View Query Data</button>
+    <div class="content">
+        <ul>
+            {% if query.data|is_list %}
+
+            {% for data in query.data %}
+            <li>{{ forloop.counter }} || {{ data }}</li>
+            {% endfor %}
+
+            {% else %}
+            <li>
+                <code>{{ query.data }}</code>
+            </li>
+            {% endif %}
+        </ul>
+    </div>
+    <hr>
+    <code>
+        <span style="font-size: 15px;"><span style="color: darkblue;">{{ forloop.counter }}</span> <span style="color: red;">(End)</span></span>
+        {% for _ in "x"|rjust:"100" %}*{% endfor %}
+    </code> 
+    <br>
+
+    {% endfor %}
+
+    <hr>
+
+    <script>
+        var coll = document.getElementsByClassName("collapsible");
+        var i;
+
+        for (i = 0; i < coll.length; i++) {
+            coll[i].addEventListener("click", function () {
+                this.classList.toggle("active");
+                var content = this.nextElementSibling;
+                if (content.style.maxHeight) {
+                    content.style.maxHeight = null;
+                } else {
+                    content.style.maxHeight = content.scrollHeight + "px";
+                }
+            });
+        }
+    </script>
+
+</body>
+
+</html>
